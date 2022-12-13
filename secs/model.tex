@@ -1,0 +1,84 @@
+Prices are driven by four state variables: 
+
+\begin{enumerate}
+	\item expected dividend growth,
+	\item expected inflation,
+	\item short-term real interest rate,
+	\item price of risk.
+\end{enumerate}
+
+\subsection{Dividend growth, inflation, and the stochastic discount factor}
+
+We are considering six shocks denoted by a vector $\varepsilon_{t}\in\R^{6}$: shocks to dividend growth, to inflation, to \emph{expected} dividend growth, to \emph{expected} inflation, to the real risk-free rate, and to the price of risk.
+
+As usual, we denote by $D_t$ the level of aggregate \emph{real} dividned at time $t$ and $d_t = \log D_t$. Its growth rate follows the following process:
+\begin{equation}
+	\begin{aligned}
+			\Delta d_{t+1} & = z_t + \inner{\sigma_d}{\varepsilon_{t+1}},\\
+			z_{t+1} & = (1-\phi_z) g + \phi_z z_t + \inner{\sigma_z}{\varepsilon_{t+1}},
+	\end{aligned}
+\end{equation}
+with $\sigma_d,\sigma_z\in\R^6$ being the vectors of loadings on the shocks; and $\phi_z\in[0,1]$ measures the autocorrelation. Each variable is assumed to be stationary and positively autocorrelated (although the realised dividend growth may be (and in fact will be) negatively autocorrelated). Also, $g$ can be interpreted as the unconditional mean of dividend growth.
+
+We are interested in pricing nominal bonds, so we specify a process for inflation, so we denote the price level by $\Pi_t$ and the log by $\pi_t = \log \Pi_t$. Inflation process is 
+\begin{equation}
+	\begin{aligned}
+		\Delta \pi_{t+1} & = q_t + \inner{\sigma_\pi}{\varepsilon_{t+1}}\\
+		q_{t+1} & = (1-\phi_q)\bar{q} + \phi_q q_t + \inner{\sigma_q}{\varepsilon_{t+1}}
+	\end{aligned}
+\end{equation}
+where $\sigma_\pi, \sigma_q\in\R^6$ are the vector of the loadings of shocks and $\bar{q}$ is the unconditional mean of inflation. Again, $\phi_q$ is the autocorrelation. In what follows, all quantities are rexpressed in real terms unless it's specifically specified. Hence, multiplying by $\Pi_t$ converts quantitites from real to nominal terms.
+
+Regarding the discount rates, they are determined by the real risk-free rate and by the price of risk. We denote by $r_{t+1}^f$ the continuous compounded risk-free return between times $t$ and $t+1$, and also assumed that is known at time $t$ and follows
+\begin{equation}
+	r_{t+1}^f = (1-\phi_r)\bar{r}^f + \phi_r r_t^f + \inner{\sigma_r}{\varepsilon_{t+1}},
+\end{equation}
+where $\sigma_r\in\R^6$ is the vector of the loadings on the shocks, $\bar{r}^f$ is the unconditional mean of $r_t^f$, and $\phi_r$ is the autocorrelation.
+
+The variable that determines the price of risk, and therefore risk premia in this homoskedastic model is denoted by $x_t$ and follow
+\begin{equation}
+	x_t = (1-\phi_x)\bar{x} + \phi_x x_t  + \inner{\sigma_x}{\varepsilon_{t+1}}
+\end{equation}
+A key assumption here is that only fundamental dividend risk is priced directly, which means that the price of risk is proportional to the vector $\sigma_d$.
+
+The \emph{Stochastic Discount Factor} is given by:
+\begin{equation}
+	M_{t+1} = \e{-r_{t+1}^f - \frac{1}{2}\sigma_d^2x_t^2 - x_t\inner{\sigma_d}{\varepsilon_{t+1}}}.
+\end{equation}
+Asset prices are therefore determined by means of the Euler equation:
+\begin{equation}
+	\E_t\left[M_{t+1}R_{t+1}\right] = 1,
+\end{equation}
+where $R_{t+1}$ denotes the real return on a traded asset.
+
+\subsection{Real bonds}
+
+Let $P_{n,t}^r$ denote the price of an $n$-period real bond at time $t$, i.e.,  it denotes the time-$t$ price of an asset with a fixed payoff of one at time $t+n$. Since there are no intermediate payoffs, its return between $t$ and $t+1$ equals
+\begin{equation}
+	R_{n,t+1}^r = \frac{P_{n-2,t+1}^r}{P_{n,t}^r}.
+\end{equation}
+Hence, the prices of real bonds can be determined recursively from the Euler equation by 
+\begin{equation}
+	\E_{t}\left[M_{t+1}P^r_{n-1,t+1}\right] = P_{n,t}^r,
+\end{equation}
+with $P_{0,t}^r = 1$.
+
+%Hence, we can summarise the model into the following equations:
+%\begin{equation}
+%	\left\{
+%		\begin{aligned}
+%			\Delta d_{t+1} & = z_t + \inner{\sigma_d}{\varepsilon_{t+1}},\\
+%			z_{t+1} & = (1-\phi_z) g + \phi_z z_t + \inner{\sigma_z}{\varepsilon_{t+1}},\\
+%			\Delta \pi_{t+1} & = q_t + \inner{\sigma_\pi}{\varepsilon_{t+1}}\\
+%			q_{t+1} & = (1-\phi_q)\bar{q} + \phi_q q_t + \inner{\sigma_q}{\varepsilon_{t+1}}\\
+%			r_{t+1}^f &= (1-\phi_r)\bar{r}^f + \phi_r r_t^f + \inner{\sigma_r}{\varepsilon_{t+1}},\\
+%			x_t &= (1-\phi_x)\bar{x} + \phi_x x_t  + \inner{\sigma_x}{\varepsilon_{t+1}}\\
+%			&\phantom{=} \sigma_i, \ i\in\{d,\pi, q, r, x\}; \\
+%			&\phantom{=} \phi_j, j\in\{z,q,r,x\};\\
+%			&\phantom{=}  g, \bar{q}, \bar{r}^f, \bar{x}
+%		\end{aligned}
+%	\right.
+%\end{equation}
+
+
+

@@ -1,0 +1,35 @@
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{caption, graphicx, graphics}
+
+
+
+\renewcommand{\baselinestretch}{1.5}
+
+%& MARGINS
+\geometry{
+	top=0.075\paperheight,
+	bottom=0.075\paperheight,
+	right=0.1\paperwidth,
+	left=0.1\paperwidth,
+	footskip=0.05\paperheight
+}
+
+%& ENUMERATE
+\setlist[enumerate, 1]{
+	label = \arabic*.,
+	ref 	= \arabic*,
+	itemsep=0pt,
+	topsep=0pt,
+	parsep=0pt,
+	itemindent=0.5\leftmargin
+}
+
+
+%& COMMANDS
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\inner}[2]{#1\cdot#2}
+\newcommand{\e}[1]{\text{\large e}^{#1}}

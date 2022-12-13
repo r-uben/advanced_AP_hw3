@@ -1,0 +1,8 @@
+*.asv
+*.log
+*.jnl
+TS_BY04_RubenFernandez_f.m
+TS_BY04_RubenFernandez_ff.m
+*.mat
+*.dump
+*.DS_Store
