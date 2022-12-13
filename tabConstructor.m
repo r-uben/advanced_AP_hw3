@@ -9,8 +9,8 @@ classdef tabConstructor
         function captionsetup(obj, tab, width)
             fprintf(tab, '%s%1.1f%s\n', '\captionsetup{font=small, width=', width, '\textwidth}');
         end
-        function captioning(obj,tab,caption)
-            fprintf(tab, '%s%s%s\n', '\caption{', caption, '} \label{tab:tab1} \vspace{0.25cm}');
+        function captioning(obj,tab,caption, number)
+            fprintf(tab, '%s%s%s%i%s\n', '\caption{', caption, '} \label{tab:tab',num2str(number), '} \vspace{0.25cm}');
         end
         function centering(obj,tab);
            fprintf(tab, '%s\n', '\centering');
@@ -39,6 +39,18 @@ classdef tabConstructor
                     fprintf(tab, '%2.3f%s', values(n), ' &');
                 else
                     fprintf(tab, '%2.3f%s\n', values(n), ' \\');
+                end
+            end
+        end
+
+        function write_row_for_integers(obj, tab, name_row, values)
+            N = length(values);
+            fprintf(tab, '%s%s', name_row, '&');
+             for n=1:N
+                if n < N
+                    fprintf(tab, '%i%s', values(n), ' &');
+                else
+                    fprintf(tab, '%i%s\n', values(n), ' \\');
                 end
             end
         end

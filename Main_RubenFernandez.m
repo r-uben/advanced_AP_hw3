@@ -8,7 +8,9 @@ clear all;
 
 %% OUTPUT: DYNARE ++
 
-infl = inflation_prompt;
+%infl = inflation_prompt;
+
+for infl=0:1
 
 % Stochastic discount factor;
 global delta gamma psi alpha theta;
@@ -32,13 +34,12 @@ cash_flow_param_names   = ["rho" "mu" "phi"];
 cash_flow_param_values  = [rho mu phi];
 
 if infl
-
 % Inflation
 global sigma_q sigma_pi phi_q q_bar
     sigma_q = 0.35/100/sqrt(12);
     sigma_pi = 1.18/100/sqrt(12);
     phi_q = 0.78^(1/12);
-    q_bar =  3.68*12/100;
+    q_bar =  3.68/12/100;
     inflation_param_names = ["sigma_q" "sigma_pi" "phi_q" "q_bar"];
     inflation_param_values = [sigma_q sigma_pi phi_q q_bar];
 end
@@ -49,8 +50,8 @@ sigma_eps_c = sqrt(3.6e-5);
 sigma_eps_x = sqrt(9e-8);
 sigma_eps_d = sqrt(0.001296);
 if infl
-    global sigma_eps_i;
-    sigma_eps_i = 1;
+    global sigma_eps_pi;
+    sigma_eps_pi = 1;
 end
 
 % Steady states 
@@ -75,7 +76,9 @@ ss_param_values = [mbar pdbar pcbar ubar CEbar rfbar] ;
 % good.
 
 prompt = "Maximum maturity: ";
+if ~infl
 Nmax = input(prompt); 
+end
 security = 'ZCE'; % First try ZCE;
 mod = modFileGenerator;
 
@@ -99,8 +102,8 @@ equations("rc") = "exp(rc) = (1+exp(pc))/exp(pc(-1))*exp(dc);";
 equations("rm") = "exp(rm) = (1+exp(pd))/exp(pd(-1))*exp(dd);";
 equations("exr") = "exr = rm-rf(-1);";
 if infl
-    equations("dpi") = "dpi = q(-1) + sigma_pi * eps_i;";
-    equations("q") = "q = (1 - phi_q) * q_bar + phi_q * q(-1) + sigma_q * eps_i;";
+    equations("dpi") = "dpi = q(-1) + sigma_pi * eps_pi;";
+    equations("q") = "q = (1 - phi_q) * q_bar + phi_q * q(-1) + sigma_q * eps_pi;";
 end
 
 % ZCE: General
@@ -231,7 +234,7 @@ initial_values = dictionary(var_names, var_bar_values);
 if infl
     NB_names =  vertcat(p_NB.keys, r_NB.keys, exr_NB.keys).';
     var_names = [var_names ["q" "dpi"]];
-    exo_vars  = [exo_vars "eps_i"];
+    exo_vars  = [exo_vars "eps_pi"];
     params("phi_q") = phi_q;
     params("sigma_q") = sigma_q;
     params("sigma_pi") = sigma_pi;
@@ -281,25 +284,22 @@ mod.sec_initial_values(fid, pd_zce_0, r_zce_0, exr_zce_0);
 fprintf(fid, "end;\n\n");
 
 % Variance-Covariance Matrix
-if infl==0
-fprintf(fid,strcat([...
-'// Variance-Covariance Matrix\n',...
-'//       SRS	LRS	   DivS  \n',...
-'vcov =  [3.6e-5 0      0         \n',...
-'         0      9e-8   0         \n',...
-'         0      0      0.001296];\n\n',...
-'// Approximation Order\n',...
-'order = 2;']));
+order=2;
+if infl
+fprintf(fid,'vcov = [%e 0 0 0; \n', sigma_eps_c^2);
+fprintf(fid,'0 %e 0 0 ; \n', sigma_eps_x^2);
+fprintf(fid,'0 0 %e 0; \n', sigma_eps_d^2);
+fprintf(fid,'0 0 0 %e]; \n', sigma_eps_pi^2);
+fprintf(fid,'  \n');
+fprintf(fid,'order   = %e;  \n',order);
+fclose(fid);
 else
-fprintf(fid,strcat([...
-'// Variance-Covariance Matrix\n',...
-'//       SRS	LRS	   DivS  Inflation\n',...
-'vcov =  [3.6e-5 0      0         0\n',...
-'         0      9e-8   0         0\n',...
-'         0      0      0.001296  0\n',...
-'         0      0      0         1];\n\n',...
-'// Approximation Order\n',...
-'order = 2;']));
+fprintf(fid,'vcov = [%e 0 0; \n', sigma_eps_c^2);
+fprintf(fid,'0 %e 0; \n', sigma_eps_x^2);
+fprintf(fid,'0 0 %e]; \n', sigma_eps_d^2);
+fprintf(fid,'  \n');
+fprintf(fid,'order   = %e;  \n',order);
+fclose(fid);
 end
 
 %% OUTPUT: DYNARE ++
@@ -307,16 +307,15 @@ filename = 'TS_BY04_RubenFernandez';
 eval(sprintf('!dpp/dynare++ --per 15 --sim 3 --ss-tol 1e-10 %s.mod',filename));
 eval(sprintf('load %s.mat',filename));
 
-results = table(dyn_vars, dyn_steady_states, dyn_ss);
-
 %% SIMULATION
 
 randn('state',2022);
 N=Nmax;
+if ~infl
 prompt='Number of observations: ';
-K=input(prompt); 
+K=input(prompt);
+end
 shocks = mvnrnd(zeros(1,length(exo_vars)), dyn_vcov_exo, K)'; % simulate shocks
-
 sim = dynare_simul(filename, shocks, dyn_ss); 
 
 dyn_i_p_B = [];
@@ -388,65 +387,72 @@ end
 if infl
 figure
 subplot(3,1,1);
-yyaxis left;
+hold on
 plot(1:N, rp_NB_mean, '--');
-ylabel('Nominal Bond' , 'Interpreter', 'Latex');
-yyaxis right;
 plot(1:N, rp_ZCE_mean, '-');
-ylabel('ZCE', 'Interpreter', 'Latex');
-title('Annualized Monthly Risk Premium: Bonds vs. ZCE (\%)', 'Interpreter', 'Latex');
+legend('Nominal Bond', 'ZCE','Interpreter', 'Latex', 'Location', 'southeast');
+title('Annualised Monthly Risk Premium: Bonds vs. ZCE (\%)', 'Interpreter', 'Latex');
 
 subplot(3,1,2);
-yyaxis left;
+hold on
 plot(1:N, rp_NB_vol, '--');
-ylabel('Nominal Bond',  'Interpreter', 'Latex');
-yyaxis right;
 plot(1:N, rp_ZCE_vol, '-');
-ylabel('ZCE', 'Interpreter', 'Latex');
-title('Annualized Monthly Volatility: Bonds vs. ZCE (\%)', 'Interpreter', 'Latex');
+title('Annualised Monthly Volatility: Nominal Bonds vs. ZCE (\%)', 'Interpreter', 'Latex');
 
 subplot(3,1, 3);
-yyaxis left;
+hold on
 plot(1:N, sp_NB, '--');
-ylabel('Nominal Bond', 'Interpreter', 'Latex');
-yyaxis right;
 plot(1:N, sp_ZCE, '-');
-ylabel('ZCE', 'Interpreter', 'Latex');
 xlabel('Maturity (months)', 'Interpreter', 'Latex')
-title('Annualized Monthly Sharpe Ratio: Bonds vs. ZCE (\%)', 'Interpreter', 'Latex');
+title('Annualised Monthly Sharpe Ratio: Nominal Bonds vs. ZCE (\%)', 'Interpreter', 'Latex');
  
 exportgraphics(gcf,'secs/fig/maturities_with_infl.png','Resolution',300)
+
+figure
+subplot(3,1,1);
+hold on
+plot(1:N, rp_NB_mean, '--');
+plot(1:N, rp_B_mean, '-');
+legend('Nominal Bond', 'Real Bond','Interpreter', 'Latex', 'Location', 'southeast');
+title('Annualised Monthly Risk Premium: Nominal Bonds vs. Real Bonds (\%)', 'Interpreter', 'Latex');
+
+subplot(3,1,2);
+hold on
+plot(1:N, rp_NB_vol, '--');
+plot(1:N, rp_B_vol, '-');
+title('Annualised Monthly Volatility: Nominal Bonds vs. Real Bonds (\%)', 'Interpreter', 'Latex');
+  
+subplot(3,1, 3);
+hold on
+plot(1:N, sp_NB, '--');
+plot(1:N, sp_B, '-');
+xlabel('Maturity (months)', 'Interpreter', 'Latex')
+title('Annualised Monthly Sharpe Ratio: Nominal Bonds vs. Real Bonds (\%)', 'Interpreter', 'Latex');
+ 
+exportgraphics(gcf,'secs/fig/realvsnominal.png','Resolution',1000)
 else
 figure
 subplot(3,1,1);
-yyaxis left;
+hold on
 plot(1:N, rp_B_mean, '--');
-ylabel('Real Bond' , 'Interpreter', 'Latex');
-yyaxis right;
 plot(1:N, rp_ZCE_mean, '-');
-ylabel('ZCE', 'Interpreter', 'Latex');
-title('Annualized Monthly Risk Premium: Bonds vs. ZCE (\%)', 'Interpreter', 'Latex');
+legend('Real Bond', 'ZCE','Interpreter', 'Latex', 'Location', 'southeast');
+title('Annualised Monthly Risk Premium: Bonds vs. ZCE (\%)', 'Interpreter', 'Latex');
 
 subplot(3,1,2);
-yyaxis left;
+hold on
 plot(1:N, rp_B_vol, '--');
-ylabel('Real Bond',  'Interpreter', 'Latex');
-yyaxis right;
 plot(1:N, rp_ZCE_vol, '-');
-ylabel('ZCE', 'Interpreter', 'Latex');
-title('Annualized Monthly Volatility: Bonds vs. ZCE (\%)', 'Interpreter', 'Latex');
+title('Annualised Monthly Volatility: Bonds vs. ZCE (\%)', 'Interpreter', 'Latex');
 
 subplot(3,1, 3);
-yyaxis left;
+hold on
 plot(1:N, sp_B, '--');
-ylabel('Real Bond', 'Interpreter', 'Latex');
-yyaxis right;
 plot(1:N, sp_ZCE, '-');
-ylabel('ZCE', 'Interpreter', 'Latex');
 xlabel('Maturity (months)', 'Interpreter', 'Latex')
-title('Annualized Monthly Sharpe Ratio: Bonds vs. ZCE (\%)', 'Interpreter', 'Latex');
+title('Annualised Monthly Sharpe Ratio: Bonds vs. ZCE (\%)', 'Interpreter', 'Latex');
  
-exportgraphics(gcf,'secs/fig/maturities.png','Resolution',300)
+exportgraphics(gcf,'secs/fig/maturities.png','Resolution',1000)
 end
 
 %% TABLE
@@ -465,31 +471,40 @@ for i=1:M
     rp_B_mean_to_print = [rp_B_mean_to_print rp_B_mean(maturities(i))];
     rp_B_vol_to_print = [rp_B_vol_to_print rp_B_vol(maturities(i))];
     sp_B_to_print = [sp_B_to_print sp_B(maturities(i))];
+    if infl
     rp_NB_mean_to_print = [rp_NB_mean_to_print rp_NB_mean(maturities(i))];
     rp_NB_vol_to_print = [rp_NB_vol_to_print rp_NB_vol(maturities(i))];
     sp_NB_to_print = [sp_NB_to_print sp_NB(maturities(i))];
+    end
     rp_ZCE_mean_to_print = [rp_ZCE_mean_to_print rp_ZCE_mean(maturities(i))];
     rp_ZCE_vol_to_print = [rp_ZCE_vol_to_print rp_ZCE_vol(maturities(i))];
     sp_ZCE_to_print = [sp_ZCE_to_print sp_ZCE(maturities(i))];
 end
 
 table = tabConstructor();
-caption = '';
+caption = [strcat(['This table provides the mean, the standard deviation and the ' ...
+    'Sharpe Ratio of (log) risk premia on \emph{real} bonds (Panel A), and the ' ...
+    'zero-coupon equity (Panel B) for different maturities. The data has been' ...
+    'obtained under a simulation of our model with ', num2str(K), ' observations.'])];
 
 % REAL BONDS
 tab = table.open_it("results");
 table.open_table_env(tab);
 table.captionsetup(tab, 0.75);
-table.captioning(tab, caption);
+table.captioning(tab, caption, 1);
 table.centering(tab);
-table.row_sep(tab, 1.1);
+table.row_sep(tab, 1.05);
 table.open_tabular_env(tab, M);
 table.panel(tab, "A", M);
+table.write_row_for_integers(tab, 'Maturities', 5:5:N);
+table.write_hline(tab);
 table.write_row(tab, '$\E\left[r_{n,t}^{b,ex}\right]$', rp_B_mean_to_print);
 table.write_row(tab, '$\sigma\hspace{-0.02cm}\left(r_{n,t}^{b,ex}\right)$', rp_B_vol_to_print);
 table.write_row(tab, ['$\E\left[r_{n,t}^{b,ex}\right]/' ...
     '\sigma\hspace{-0.02cm}\left(r_{n,t}^{b,ex}\right)$'], sp_B_to_print);
 table.panel(tab, "B", M);
+table.write_row_for_integers(tab, 'Maturities', 5:5:N);
+    table.write_hline(tab);
 table.write_row(tab, '$\E\left[r_{n,t}^{zce,ex}\right]$', rp_ZCE_mean_to_print);
 table.write_row(tab, '$\sigma\hspace{-0.02cm}\left(r_{n,t}^{zce,ex}\right)$', rp_ZCE_vol_to_print);
 table.write_row(tab, ['$\E\left[r_{n,t}^{zce,ex}\right]/' ...
@@ -500,27 +515,41 @@ table.close_tabular_env(tab);
 table.close_table_env(tab);
 
 % NOMINAL BONDS
-tab = table.open_it("results_with_infl");
-table.open_table_env(tab);
-table.captionsetup(tab, 0.75);
-table.captioning(tab, caption);
-table.centering(tab);
-table.row_sep(tab, 1.1);
-table.open_tabular_env(tab, M);
-table.panel(tab, "A", M);
-table.write_row(tab, '$\E\left[r_{n,t}^{nb,ex}\right]$', rp_NB_mean_to_print);
-table.write_row(tab, '$\sigma\hspace{-0.02cm}\left(r_{n,t}^{b,ex}\right)$', rp_NB_vol_to_print);
-table.write_row(tab, ['$\E\left[r_{n,t}^{nb,ex}\right]/' ...
-    '\sigma\hspace{-0.02cm}\left(r_{n,t}^{nb,ex}\right)$'], sp_NB_to_print);
-table.panel(tab, "B", M);
-table.write_row(tab, '$\E\left[r_{n,t}^{zce,ex}\right]$', rp_ZCE_mean_to_print);
-table.write_row(tab, '$\sigma\hspace{-0.02cm}\left(r_{n,t}^{zce,ex}\right)$', rp_ZCE_vol_to_print);
-table.write_row(tab, ['$\E\left[r_{n,t}^{zce,ex}\right]/' ...
-    '\sigma\hspace{-0.02cm}\left(r_{n,t}^{zce,ex}\right)$'], sp_ZCE_to_print);
-table.write_hline(tab);
-table.write_hline(tab);
-table.close_tabular_env(tab);
-table.close_table_env(tab);
+if infl
+    caption = [strcat(['This table provides the mean, the standard deviation and the ' ...
+    'Sharpe Ratio of (log) risk premia on \emph{nominal} bonds (Panel A), and the ' ...
+    'zero-coupon equity (Panel B) for different maturities. The data has been' ...
+    'obtained under a simulation of our model with ', num2str(K), ' observations.'])];
+    
+    tab = table.open_it("results_with_infl");
+    table.open_table_env(tab);
+    table.captionsetup(tab, 0.75);
+    table.captioning(tab, caption, 2);
+    table.centering(tab);
+    table.row_sep(tab, 1.05);
+    table.open_tabular_env(tab, M);
+    table.panel(tab, "A", M);
+    table.write_row_for_integers(tab, 'Maturities', 5:5:N);
+    table.write_hline(tab);
+    table.write_row(tab, '$\E\left[r_{n,t}^{nb,ex}\right]$', rp_NB_mean_to_print);
+    table.write_row(tab, '$\sigma\hspace{-0.02cm}\left(r_{n,t}^{b,ex}\right)$', rp_NB_vol_to_print);
+    table.write_row(tab, ['$\E\left[r_{n,t}^{nb,ex}\right]/' ...
+        '\sigma\hspace{-0.02cm}\left(r_{n,t}^{nb,ex}\right)$'], sp_NB_to_print);
+    table.panel(tab, "B", M);
+    table.write_row_for_integers(tab, 'Maturities', 5:5:N);
+    table.write_hline(tab);
+    table.write_row(tab, '$\E\left[r_{n,t}^{zce,ex}\right]$', rp_ZCE_mean_to_print);
+    table.write_row(tab, '$\sigma\hspace{-0.02cm}\left(r_{n,t}^{zce,ex}\right)$', rp_ZCE_vol_to_print);
+    table.write_row(tab, ['$\E\left[r_{n,t}^{zce,ex}\right]/' ...
+        '\sigma\hspace{-0.02cm}\left(r_{n,t}^{zce,ex}\right)$'], sp_ZCE_to_print);
+    table.write_hline(tab);
+    table.write_hline(tab);
+    table.close_tabular_env(tab);
+    table.close_table_env(tab);
+end
+
+
+end
 
 %% COMPILE
 compile;
@@ -550,7 +579,7 @@ function compile()
 end
 
 function infl = inflation_prompt()
-    prompt = 'Wanna print inflation?: (Y/n) ';
+    prompt = 'Wanna include inflation?: (Y/n) ';
     inflation = input(prompt, 's');
     inflation_control=0;
     if contains('yes', lower(inflation))

@@ -2,7 +2,7 @@
 
 // Endogenous and exogenous variables 
 var    dc dd x pc pd u m CE ce rf rc rm exr q dpi p_B_0 p_B_1 p_B_2 p_B_3 p_B_4 p_B_5 p_B_6 p_B_7 p_B_8 p_B_9 p_B_10 p_B_11 p_B_12 p_B_13 p_B_14 p_B_15 p_B_16 p_B_17 p_B_18 p_B_19 p_B_20 p_B_21 p_B_22 p_B_23 p_B_24 p_B_25 p_B_26 p_B_27 p_B_28 p_B_29 p_B_30 r_B_1 r_B_2 r_B_3 r_B_4 r_B_5 r_B_6 r_B_7 r_B_8 r_B_9 r_B_10 r_B_11 r_B_12 r_B_13 r_B_14 r_B_15 r_B_16 r_B_17 r_B_18 r_B_19 r_B_20 r_B_21 r_B_22 r_B_23 r_B_24 r_B_25 r_B_26 r_B_27 r_B_28 r_B_29 r_B_30 exr_B_1 exr_B_2 exr_B_3 exr_B_4 exr_B_5 exr_B_6 exr_B_7 exr_B_8 exr_B_9 exr_B_10 exr_B_11 exr_B_12 exr_B_13 exr_B_14 exr_B_15 exr_B_16 exr_B_17 exr_B_18 exr_B_19 exr_B_20 exr_B_21 exr_B_22 exr_B_23 exr_B_24 exr_B_25 exr_B_26 exr_B_27 exr_B_28 exr_B_29 exr_B_30 pd_ZCE_0 pd_ZCE_1 pd_ZCE_2 pd_ZCE_3 pd_ZCE_4 pd_ZCE_5 pd_ZCE_6 pd_ZCE_7 pd_ZCE_8 pd_ZCE_9 pd_ZCE_10 pd_ZCE_11 pd_ZCE_12 pd_ZCE_13 pd_ZCE_14 pd_ZCE_15 pd_ZCE_16 pd_ZCE_17 pd_ZCE_18 pd_ZCE_19 pd_ZCE_20 pd_ZCE_21 pd_ZCE_22 pd_ZCE_23 pd_ZCE_24 pd_ZCE_25 pd_ZCE_26 pd_ZCE_27 pd_ZCE_28 pd_ZCE_29 pd_ZCE_30 r_ZCE_1 r_ZCE_2 r_ZCE_3 r_ZCE_4 r_ZCE_5 r_ZCE_6 r_ZCE_7 r_ZCE_8 r_ZCE_9 r_ZCE_10 r_ZCE_11 r_ZCE_12 r_ZCE_13 r_ZCE_14 r_ZCE_15 r_ZCE_16 r_ZCE_17 r_ZCE_18 r_ZCE_19 r_ZCE_20 r_ZCE_21 r_ZCE_22 r_ZCE_23 r_ZCE_24 r_ZCE_25 r_ZCE_26 r_ZCE_27 r_ZCE_28 r_ZCE_29 r_ZCE_30 exr_ZCE_1 exr_ZCE_2 exr_ZCE_3 exr_ZCE_4 exr_ZCE_5 exr_ZCE_6 exr_ZCE_7 exr_ZCE_8 exr_ZCE_9 exr_ZCE_10 exr_ZCE_11 exr_ZCE_12 exr_ZCE_13 exr_ZCE_14 exr_ZCE_15 exr_ZCE_16 exr_ZCE_17 exr_ZCE_18 exr_ZCE_19 exr_ZCE_20 exr_ZCE_21 exr_ZCE_22 exr_ZCE_23 exr_ZCE_24 exr_ZCE_25 exr_ZCE_26 exr_ZCE_27 exr_ZCE_28 exr_ZCE_29 exr_ZCE_30 p_NB_0 p_NB_1 p_NB_2 p_NB_3 p_NB_4 p_NB_5 p_NB_6 p_NB_7 p_NB_8 p_NB_9 p_NB_10 p_NB_11 p_NB_12 p_NB_13 p_NB_14 p_NB_15 p_NB_16 p_NB_17 p_NB_18 p_NB_19 p_NB_20 p_NB_21 p_NB_22 p_NB_23 p_NB_24 p_NB_25 p_NB_26 p_NB_27 p_NB_28 p_NB_29 p_NB_30 r_NB_1 r_NB_2 r_NB_3 r_NB_4 r_NB_5 r_NB_6 r_NB_7 r_NB_8 r_NB_9 r_NB_10 r_NB_11 r_NB_12 r_NB_13 r_NB_14 r_NB_15 r_NB_16 r_NB_17 r_NB_18 r_NB_19 r_NB_20 r_NB_21 r_NB_22 r_NB_23 r_NB_24 r_NB_25 r_NB_26 r_NB_27 r_NB_28 r_NB_29 r_NB_30 exr_NB_1 exr_NB_2 exr_NB_3 exr_NB_4 exr_NB_5 exr_NB_6 exr_NB_7 exr_NB_8 exr_NB_9 exr_NB_10 exr_NB_11 exr_NB_12 exr_NB_13 exr_NB_14 exr_NB_15 exr_NB_16 exr_NB_17 exr_NB_18 exr_NB_19 exr_NB_20 exr_NB_21 exr_NB_22 exr_NB_23 exr_NB_24 exr_NB_25 exr_NB_26 exr_NB_27 exr_NB_28 exr_NB_29 exr_NB_30 ;
-varexo    eps_c eps_x eps_d eps_i ;
+varexo    eps_c eps_x eps_d eps_pi ;
 
 // Parameters
 parameters   delta gamma psi alpha theta rho mu phi sigma_q sigma_pi phi_q q_bar ;
@@ -18,7 +18,7 @@ phi = 2.000000e+00;
 sigma_q = 1.010363e-03; 
 sigma_pi = 3.406367e-03; 
 phi_q = 9.795078e-01; 
-q_bar = 4.416000e-01; 
+q_bar = 3.066667e-03; 
 
 // Model
 model; 
@@ -35,8 +35,8 @@ exp(pd)=exp(m(+1))*(1+exp(pd(+1)))*exp(dd(+1));
 exp(rc)=(1+exp(pc))/exp(pc(-1))*exp(dc); 
 exp(rm)=(1+exp(pd))/exp(pd(-1))*exp(dd); 
 exr=rm-rf(-1); 
-dpi=q(-1)+sigma_pi*eps_i; 
-q=(1-phi_q)*q_bar+phi_q*q(-1)+sigma_q*eps_i; 
+dpi=q(-1)+sigma_pi*eps_pi; 
+q=(1-phi_q)*q_bar+phi_q*q(-1)+sigma_q*eps_pi; 
 
 exp(p_B_0) = 1 ;
 r_B_1=p_B_0-p_B_1(-1);
@@ -328,8 +328,8 @@ rf = 2.000500e-03;
 rc = 2.000500e-03; 
 rm = 2.000500e-03; 
 exr = 0.000000e+00; 
-dpi = 4.416000e-01; 
-q = 4.416000e-01; 
+dpi = 3.066667e-03; 
+q = 3.066667e-03; 
 
 p_B_0 = 0 ;
 r_B_1=-0.0020005;
@@ -425,94 +425,94 @@ p_B_30=-0.060015;
 p_NB_0 = 0 ;
 r_NB_1=-0.0020005;
 exr_NB_1=0;
-p_NB_1=-0.4396;
+p_NB_1=-0.0010662;
 r_NB_2=-0.0020005;
 exr_NB_2=0;
-p_NB_2=-0.4396;
+p_NB_2=-0.0010662;
 r_NB_3=-0.0020005;
 exr_NB_3=0;
-p_NB_3=-0.4396;
+p_NB_3=-0.0010662;
 r_NB_4=-0.0020005;
 exr_NB_4=0;
-p_NB_4=-0.4396;
+p_NB_4=-0.0010662;
 r_NB_5=-0.0020005;
 exr_NB_5=0;
-p_NB_5=-0.4396;
+p_NB_5=-0.0010662;
 r_NB_6=-0.0020005;
 exr_NB_6=0;
-p_NB_6=-0.4396;
+p_NB_6=-0.0010662;
 r_NB_7=-0.0020005;
 exr_NB_7=0;
-p_NB_7=-0.4396;
+p_NB_7=-0.0010662;
 r_NB_8=-0.0020005;
 exr_NB_8=0;
-p_NB_8=-0.4396;
+p_NB_8=-0.0010662;
 r_NB_9=-0.0020005;
 exr_NB_9=0;
-p_NB_9=-0.4396;
+p_NB_9=-0.0010662;
 r_NB_10=-0.0020005;
 exr_NB_10=0;
-p_NB_10=-0.4396;
+p_NB_10=-0.0010662;
 r_NB_11=-0.0020005;
 exr_NB_11=0;
-p_NB_11=-0.4396;
+p_NB_11=-0.0010662;
 r_NB_12=-0.0020005;
 exr_NB_12=0;
-p_NB_12=-0.4396;
+p_NB_12=-0.0010662;
 r_NB_13=-0.0020005;
 exr_NB_13=0;
-p_NB_13=-0.4396;
+p_NB_13=-0.0010662;
 r_NB_14=-0.0020005;
 exr_NB_14=0;
-p_NB_14=-0.4396;
+p_NB_14=-0.0010662;
 r_NB_15=-0.0020005;
 exr_NB_15=0;
-p_NB_15=-0.4396;
+p_NB_15=-0.0010662;
 r_NB_16=-0.0020005;
 exr_NB_16=0;
-p_NB_16=-0.4396;
+p_NB_16=-0.0010662;
 r_NB_17=-0.0020005;
 exr_NB_17=0;
-p_NB_17=-0.4396;
+p_NB_17=-0.0010662;
 r_NB_18=-0.0020005;
 exr_NB_18=0;
-p_NB_18=-0.4396;
+p_NB_18=-0.0010662;
 r_NB_19=-0.0020005;
 exr_NB_19=0;
-p_NB_19=-0.4396;
+p_NB_19=-0.0010662;
 r_NB_20=-0.0020005;
 exr_NB_20=0;
-p_NB_20=-0.4396;
+p_NB_20=-0.0010662;
 r_NB_21=-0.0020005;
 exr_NB_21=0;
-p_NB_21=-0.4396;
+p_NB_21=-0.0010662;
 r_NB_22=-0.0020005;
 exr_NB_22=0;
-p_NB_22=-0.4396;
+p_NB_22=-0.0010662;
 r_NB_23=-0.0020005;
 exr_NB_23=0;
-p_NB_23=-0.4396;
+p_NB_23=-0.0010662;
 r_NB_24=-0.0020005;
 exr_NB_24=0;
-p_NB_24=-0.4396;
+p_NB_24=-0.0010662;
 r_NB_25=-0.0020005;
 exr_NB_25=0;
-p_NB_25=-0.4396;
+p_NB_25=-0.0010662;
 r_NB_26=-0.0020005;
 exr_NB_26=0;
-p_NB_26=-0.4396;
+p_NB_26=-0.0010662;
 r_NB_27=-0.0020005;
 exr_NB_27=0;
-p_NB_27=-0.4396;
+p_NB_27=-0.0010662;
 r_NB_28=-0.0020005;
 exr_NB_28=0;
-p_NB_28=-0.4396;
+p_NB_28=-0.0010662;
 r_NB_29=-0.0020005;
 exr_NB_29=0;
-p_NB_29=-0.4396;
+p_NB_29=-0.0010662;
 r_NB_30=-0.0020005;
 exr_NB_30=0;
-p_NB_30=-0.4396;
+p_NB_30=-0.0010662;
 pd_ZCE_0 = 0 ;
 r_ZCE_1=0.0020005;
 exr_ZCE_1=0;
@@ -606,12 +606,9 @@ exr_ZCE_30=0;
 pd_ZCE_30=0.10502;
 end;
 
-// Variance-Covariance Matrix
-//       SRS	LRS	   DivS  Inflation
-vcov =  [3.6e-5 0      0         0
-         0      9e-8   0         0
-         0      0      0.001296  0
-         0      0      0         1];
-
-// Approximation Order
-order = 2;
+vcov = [3.600000e-05 0 0 0; 
+0 9.000000e-08 0 0 ; 
+0 0 1.296000e-03 0; 
+0 0 0 1.000000e+00]; 
+  
+order   = 2.000000e+00;  
